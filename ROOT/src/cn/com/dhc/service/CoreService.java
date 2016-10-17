@@ -69,12 +69,7 @@ public class CoreService {
 					
 					return respContent;
 				}
-				if("爱".equals(requestMap.get("Content"))){
-					respContent = "我爱老婆和小棉袄!\ue057";
-					textMessage.setContent(respContent);
-					return MessageUtil.messageToXml(textMessage);
-				}
-					
+				
 			}else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)){
 				//图片消息
 				respContent = "你发送的是图片消息";
