@@ -57,8 +57,9 @@ public class MessageUtil {
                 // 对所有xml节点的转换都增加CDATA标记  
                 boolean cdata = true;  
                 
-                public void startNode(String name, Class clazz) {  
-                    super.startNode(name, clazz);  
+                @Override
+                public void startNode(String name, Class clasz) {  
+                    super.startNode(name, clasz);  
                 }  
   
                 protected void writeText(QuickWriter writer, String text) {  
