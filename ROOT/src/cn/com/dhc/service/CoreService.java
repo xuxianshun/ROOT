@@ -32,8 +32,9 @@ public class CoreService {
 			System.out.println("消息类型:"+msgType);
 			if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)){
 				//文本消息
+				String content = requestMap.get("Content");
 				respContent = "你发送的是文本消息:\n"+requestMap.get("Content")+"\n更多消息请点击<a href=\"http://www.baidu.com\">百度</a>";
-				if("图文".equals(requestMap.get("Content"))){
+				if("图文".equals(content)){
 					NewsMessage message = new NewsMessage();
 					List<Article> list = new ArrayList<Article>();
 					
@@ -68,6 +69,16 @@ public class CoreService {
 					respContent = MessageUtil.newsMessageToXml(message);
 					
 					return respContent;
+				}
+				
+				if(content.startsWith("翻译")){
+					//调用百度翻译词汇
+					String strTranslate = content.replaceAll("^翻译", "").trim(); 
+					System.out.println("等待翻译:"+strTranslate);
+					if(!"".equals(strTranslate)){
+						textMessage.setContent(BaiduTranslateService.translate(strTranslate));
+						return MessageUtil.messageToXml(textMessage);
+					}
 				}
 				
 			}else if(msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_IMAGE)){
