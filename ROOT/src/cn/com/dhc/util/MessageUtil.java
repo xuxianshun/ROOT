@@ -1,5 +1,6 @@
 package cn.com.dhc.util;
 
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,8 +56,7 @@ public class MessageUtil {
             return new PrettyPrintWriter(out) {  
                 // 对所有xml节点的转换都增加CDATA标记  
                 boolean cdata = true;  
-  
-                @SuppressWarnings("unchecked")  
+                
                 public void startNode(String name, Class clazz) {  
                     super.startNode(name, clazz);  
                 }  
@@ -77,6 +77,7 @@ public class MessageUtil {
 	/*
 	 * 解析微信发来的请求（XML） 
 	 */
+	@SuppressWarnings("unchecked")
 	public static Map<String,String> parseXml(HttpServletRequest request)throws Exception{
 		Map<String,String> map = new HashMap<String,String>();
 		SAXReader reader = new SAXReader();
@@ -98,20 +99,32 @@ public class MessageUtil {
 		
 	}
 	
+	/**
+	 * 图文消息转化为xml
+	 * @param message
+	 * @return
+	 */
 	public static String newsMessageToXml(NewsMessage message){
 		xstream.alias("xml", message.getClass());
 		xstream.alias("item", Article.class);
 		return xstream.toXML(message);
 	}
 	
-	/*
+	/**
 	 * 通用对象转化为xml
+	 * @param message
+	 * @return
 	 */
 	public static String messageToXml(Object message){
 		xstream.alias("xml", message.getClass());
 		return xstream.toXML(message);
 	}
 	
+	/**
+	 * 返回创建时间format之后的字符串
+	 * @param createTime
+	 * @return
+	 */
 	public static String formatTime(String createTime){
 		long lngTime = Long.parseLong(createTime)*1000L;
 		return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(lngTime));
@@ -122,5 +135,23 @@ public class MessageUtil {
 	 */
 	public static String emoji(int hexEmoji){
 		return String.valueOf(Character.toChars(hexEmoji));
+	}
+	
+	/**
+	 * 返回字符串的长度（使用UTF-8）计算
+	 * @param content
+	 * @return
+	 */
+	public static int getByteSize(String content){
+		int size = 0;
+		if(content!=null&&!"".equals(content)){
+			try {
+				size = content.getBytes("utf-8").length;
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return size;
 	}
 }
